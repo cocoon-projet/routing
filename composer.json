@@ -13,7 +13,7 @@
     "laminas/laminas-diactoros": "^2.4",
     "nikic/fast-route": "^1.3",
     "psr/http-server-middleware": "^1.0",
-    "cocoon-projet/di": "^1.0",
+    "cocoon-projet/di": "^1",
     "http-interop/response-sender": "^1.0"
   },
   "autoload-dev": {
