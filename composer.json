@@ -26,5 +26,10 @@
     "phpunit/phpunit": "^6.5",
     "php-coveralls/php-coveralls": "^2.1",
     "symfony/var-dumper": "^4.4"
+  },
+  "config": {
+    "allow-plugins": {
+      "ocramius/package-versions": true
+    }
   }
 }
