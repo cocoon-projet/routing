@@ -35,8 +35,8 @@ class RouterTest extends RoutingTest
         };
         $namedRoute = $this->route->get($uri, $handler)->name($this->routeName)->withs(['page' => '\d+']);
         $this->assertEquals($namedRoute->getName(), $this->routeName);
-        $this->assertInternalType('array', $this->route->getRoutes());
-        $this->assertInternalType('array', $namedRoute->getPatterns());
+        $this->assertIsArray($this->route->getRoutes());
+        $this->assertIsArray($namedRoute->getPatterns());
         $this->assertArrayHasKey('{page}', $namedRoute->getPatterns());
         $this->assertTrue($this->route->has($this->routeName));
     }

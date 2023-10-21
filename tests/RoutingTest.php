@@ -11,7 +11,7 @@ abstract class RoutingTest extends TestCase
 {
     public $route;
 
-    public function setup()
+    protected function setup() : void
     {
         $this->route = Router::getInstance();
     }
