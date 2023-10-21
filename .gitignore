@@ -3,4 +3,5 @@
 /.vscode
 /app
 /public
+.phpunit.result.cache
 .htaccess
