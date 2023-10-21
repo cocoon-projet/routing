@@ -3,5 +3,4 @@
 /.vscode
 /app
 /public
-composer.lock
 .htaccess
