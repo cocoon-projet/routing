@@ -39,13 +39,13 @@ jobs:
 
     # Add a test script to composer.json, for instance: "test": "vendor/bin/phpunit"
     # Docs: https://getcomposer.org/doc/articles/scripts.md
-
+    # vendor/bin/php-coveralls --coverage_clover=build/logs/clover.xml -v
     - name: Run test suite
       run: composer run-script test
     - name: Upload coverage results to Coveralls
       env:
         COVERALLS_REPO_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       run: |
-        php-coveralls --coverage_clover=build/logs/clover.xml -v  
+          vendor/bin/phpunit --colors --coverage-text --coverage-clover build/logs/clover.xml  
 
   
