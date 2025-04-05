@@ -1,24 +1,44 @@
 <?php
+declare(strict_types=1);
 
 namespace Cocoon\Routing;
 
 /**
  * Enregistre une route pour l'application
  *
- * Class RouteBuilder
+ * Cette classe permet de construire et configurer une route avec ses paramètres,
+ * ses patterns et ses contraintes.
+ *
  * @package Cocoon\Routing
  */
 class RouteBuilder
 {
-    private $httpMethod;
-    private $uri;
-    private $handler;
-    private $routeGetName = [];
-    private $name = '';
-    private $host = '';
-    private $scheme = '';
-    private $port = '';
-    protected $aliasPatterns = [
+    /** @var array<string>|string Méthode(s) HTTP */
+    private array|string $httpMethod;
+
+    /** @var string URI de la route */
+    private string $uri;
+
+    /** @var mixed Gestionnaire de la route (array{0: class-string, 1: string}|callable|string) */
+    private mixed $handler;
+
+    /** @var array<string, string> Routes nommées */
+    private array $routeGetName = [];
+
+    /** @var string Nom de la route */
+    private string $name = '';
+
+    /** @var string Hôte de la route */
+    private string $host = '';
+
+    /** @var string Schéma de la route */
+    private string $scheme = '';
+
+    /** @var string Port de la route */
+    private string $port = '';
+
+    /** @var array<string, string> Patterns d'alias par défaut */
+    protected array $aliasPatterns = [
         ':num' => ':[0-9]+',
         ':str' => ':[a-zA-Z]+',
         ':alnum' => ':[a-zA-Z0-9]+',
@@ -27,37 +47,40 @@ class RouteBuilder
         '{slug}' => '{slug:[a-z0-9\-]+}'
     ];
 
-    protected $addPattern = [];
+    /** @var array<string, string> Patterns additionnels */
+    protected array $addPattern = [];
 
     /**
-     * RouteBuilder constructor.
-     * @param string|array $httpMethod
-     * @param string $uri
-     * @param string|callable $handler
+     * Constructeur
+     *
+     * @param array<string>|string $httpMethod Méthode(s) HTTP
+     * @param string $uri URI de la route
+     * @param array{0: class-string, 1: string}|callable|string $handler Gestionnaire de la route
      */
-    public function __construct($httpMethod, string $uri, $handler)
+    public function __construct(array|string $httpMethod, string $uri, array|callable|string $handler)
     {
         $this->httpMethod = $httpMethod;
         $this->uri = $uri;
         $this->handler = $handler;
     }
+
     /**
-     * definit un alias pour une route
+     * Définit un nom pour la route
      *
-     * @param string $routeName
-     * @return $this
+     * @param string $routeName Nom de la route
+     * @return self
      */
-    public function name($routeName = ''): RouteBuilder
+    public function name(string $routeName = ''): self
     {
         $this->name = $routeName;
-        if (! empty($this->name)) {
+        if (!empty($this->name)) {
             $this->routeGetName[$this->name] = $this->resolveUri();
         }
         return $this;
     }
 
     /**
-     * retourne le nom de la route, si definit.
+     * Retourne le nom de la route
      *
      * @return string
      */
@@ -67,103 +90,140 @@ class RouteBuilder
     }
 
     /**
-     * Retourne les paramètres de la route enregistée
+     * Retourne les paramètres de la route
      *
-     * @return array
+     * @return array{httpMethod: array<string>|string, route: string, handler: array{0: class-string, 1: string}|callable|string, name: string}
      */
     public function route(): array
     {
-        return ['httpMethod' => $this->httpMethod,
+        return [
+            'httpMethod' => $this->httpMethod,
             'route' => $this->resolveUri(),
             'handler' => $this->handler,
             'name' => $this->name
-            ];
+        ];
     }
 
     /**
-     * @param $host
-     * @return $this
+     * Définit l'hôte de la route
+     *
+     * @param string $host Nom d'hôte
+     * @return self
      */
-    public function host($host): RouteBuilder
+    public function host(string $host): self
     {
-        $this->host = '//' . $host;
+        $this->host = $host;
         return $this;
     }
 
     /**
-     * @param $scheme
-     * @return $this
+     * Définit le schéma de la route
+     *
+     * @param string $scheme Schéma (http, https, etc.)
+     * @return self
      */
-    public function scheme($scheme): RouteBuilder
+    public function scheme(string $scheme): self
     {
-        $this->scheme = $scheme . ':';
+        $this->scheme = $scheme;
         return $this;
     }
 
     /**
-     * @param numeric $port
-     * @return $this
+     * Définit le port de la route
+     *
+     * @param int $port Numéro de port
+     * @return self
      */
-    public function port($port): RouteBuilder
+    public function port(int $port): self
     {
-        if (is_numeric($port)) {
-            $this->port = ':' . $port;
-        }
+        $this->port = (string) $port;
         return $this;
     }
 
     /**
-     * @param string $arg
-     * @param $pattern
-     * @return $this
+     * Ajoute un pattern personnalisé pour un paramètre
+     *
+     * @param string $arg Nom du paramètre
+     * @param string $pattern Pattern de validation
+     * @return self
      */
-    public function with(string $arg, $pattern): RouteBuilder
+    public function with(string $arg, string $pattern): self
     {
         $this->addPattern['{' . $arg . '}'] = '{' . $arg . ':' . $pattern . '}';
         return $this;
     }
 
     /**
-     * @param array $args
-     * @return $this
+     * Ajoute plusieurs patterns personnalisés
+     *
+     * @param array<string, string> $args Tableau de patterns
+     * @return self
      */
-    public function withs(array $args): RouteBuilder
+    public function withs(array $args): self
     {
-        if (is_array($args)) {
-            foreach ($args as $key => $value) {
-                $this->with($key, $value);
-            }
+        foreach ($args as $key => $value) {
+            $this->with($key, $value);
         }
         return $this;
     }
 
     /**
-     * Retourne l'uri d'une route nommée
+     * Retourne l'URI d'une route nommée
      *
-     * @param string $name
-     * @return array
+     * @param string $name Nom de la route
+     * @return string
+     * @throws \InvalidArgumentException Si la route n'existe pas
      */
     public function getNamedRoute(string $name): string
     {
+        if (!isset($this->routeGetName[$name])) {
+            throw new \InvalidArgumentException("Route named '{$name}' does not exist.");
+        }
         return $this->routeGetName[$name];
     }
 
     /**
+     * Résout l'URI finale de la route
+     *
      * @return string
      */
     private function resolveUri(): string
     {
-        return $this->scheme . $this->host . $this->port . $this->matchAliasPatterns($this->uri);
+        $uri = '';
+        
+        if (!empty($this->scheme)) {
+            $uri .= $this->scheme . '://';
+        }
+        
+        if (!empty($this->host)) {
+            $uri .= $this->host;
+        }
+        
+        if (!empty($this->port)) {
+            $uri .= ':' . $this->port;
+        }
+        
+        $uri .= $this->matchAliasPatterns($this->uri);
+        
+        return $uri;
     }
 
-    protected function matchAliasPatterns($route)
+    /**
+     * Applique les patterns d'alias à l'URI
+     *
+     * @param string $route URI de la route
+     * @return string
+     */
+    protected function matchAliasPatterns(string $route): string
     {
         $patterns = $this->getPatterns();
         return str_replace(array_keys($patterns), array_values($patterns), $route);
     }
 
     /**
-     * @return array
+     * Retourne tous les patterns disponibles
+     *
+     * @return array<string, string>
      */
     public function getPatterns(): array
     {
