@@ -3,6 +3,7 @@
 /.vscode
 /app
 /public
+/build
 /prompts
 .phpunit.result.cache
 .htaccess
