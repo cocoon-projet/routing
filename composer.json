@@ -16,7 +16,7 @@
   },
   "require": {
     "php": "^8.0",
-    "cocoon-projet/di": "1.2.1",
+    "cocoon-projet/di": "1.2.2",
     "laminas/laminas-diactoros": "^3.2",
     "laminas/laminas-httphandlerrunner": "^2.3",
     "nikic/fast-route": "^1.3",
