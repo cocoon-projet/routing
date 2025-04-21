@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "a5a2376d4327beadf914c18409726c17",
+    "content-hash": "42d0b566a1ac8c702ac1afc234829a9e",
     "packages": [
         {
             "name": "cocoon-projet/di",

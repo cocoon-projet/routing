@@ -7,3 +7,4 @@
 /prompts
 .phpunit.result.cache
 .htaccess
+composer.lock
