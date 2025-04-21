@@ -92,7 +92,8 @@ class RouteBuilder
     /**
      * Retourne les paramètres de la route
      *
-     * @return array{httpMethod: array<string>|string, route: string, handler: array{0: class-string, 1: string}|callable|string, name: string}
+     * @return array{httpMethod: array<string>|string, route: string,
+     * handler: array{0: class-string, 1: string}|callable|string, name: string}
      */
     public function route(): array
     {

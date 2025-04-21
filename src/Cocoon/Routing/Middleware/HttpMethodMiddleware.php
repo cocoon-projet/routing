@@ -25,7 +25,7 @@ final class HttpMethodMiddleware implements MiddlewareInterface
      * Traite la requête et gère le override de la méthode HTTP
      */
     public function process(
-        ServerRequestInterface $request, 
+        ServerRequestInterface $request,
         RequestHandlerInterface $handler
     ): ResponseInterface {
         return $handler->handle(
@@ -45,7 +45,7 @@ final class HttpMethodMiddleware implements MiddlewareInterface
             return $request;
         }
 
-        return match(true) {
+        return match (true) {
             in_array($method, self::ALLOWED_METHODS, true) => $request->withMethod($method),
             default => $request
         };
